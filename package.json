@@ -1,0 +1,61 @@
+{
+  "name": "@kgiton/sdk",
+  "version": "1.0.0",
+  "description": "Official KGiTON SDK for Node.js - Easily integrate with KGiTON Core API",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "kgiton",
+    "sdk",
+    "api",
+    "license",
+    "token",
+    "timbangan",
+    "pos"
+  ],
+  "author": "PT KGiTON",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kgiton/nodejs-kgiton-sdk"
+  },
+  "homepage": "https://github.com/kgiton/nodejs-kgiton-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/kgiton/nodejs-kgiton-sdk/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0"
+  },
+  "peerDependencies": {
+    "axios": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "axios": {
+      "optional": true
+    }
+  }
+}
