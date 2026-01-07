@@ -186,17 +186,45 @@ export interface LicenseKey {
 }
 
 /**
- * License validation result
+ * License validation result from /api/license/validate/:key endpoint
  */
 export interface LicenseValidation {
-  valid: boolean;
   license_key: string;
+  exists: boolean;
+  is_valid: boolean;
+  is_assigned: boolean;
+  assigned_to_user_id?: string | null; // UUID of user who owns this license
   status: LicenseStatus;
   token_balance: number;
   price_per_token: number;
   device_name?: string;
+  device_model?: string;
+  purchase_type?: LicensePurchaseType;
+  subscription_status?: LicenseTransactionStatus;
+  subscription_valid?: boolean;
+  subscription_due_date?: string;
+  
+  // Legacy fields (for backward compatibility)
+  valid?: boolean; // Same as is_valid
   trial_expires_at?: string;
   message?: string;
+}
+
+
+/**
+ * License ownership validation result
+ * Combines license validation with ownership check
+ */
+export interface LicenseOwnershipValidation {
+  license_key: string;
+  exists: boolean;
+  is_assigned: boolean;
+  is_owner: boolean; // True if license is assigned to current API key user
+  owner_user_id?: string; // UUID of current user (from API key)
+  assigned_to_user_id?: string | null; // UUID from license.assigned_to
+  status: LicenseStatus;
+  token_balance: number;
+  is_valid: boolean; // Has sufficient tokens and active status
 }
 
 /**
