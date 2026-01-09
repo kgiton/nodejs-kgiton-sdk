@@ -9,7 +9,6 @@ import {
   LicenseKey,
   LicenseValidation,
   LicenseOwnershipValidation,
-  UserProfile,
 } from '../types';
 
 /**
