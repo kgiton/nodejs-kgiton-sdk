@@ -372,6 +372,10 @@ export interface TopupRequest {
   token_count: number;
   payment_method?: PaymentMethod;
   customer_phone?: string;
+  /** Customer name for payment gateway (for partner integrations) */
+  customer_name?: string;
+  /** Customer email for payment gateway (for partner integrations) */
+  customer_email?: string;
 }
 
 export interface VirtualAccountInfo {
