@@ -384,6 +384,11 @@ export interface VirtualAccountInfo {
   bank: string;
 }
 
+export interface QRISInfo {
+  qr_string?: string | null;
+  qr_image_url?: string;
+}
+
 export interface TopupResponse {
   transaction_id: string;
   license_key: string;
@@ -395,6 +400,8 @@ export interface TopupResponse {
   gateway_provider: string;
   payment_url?: string;
   virtual_account?: VirtualAccountInfo;
+  qris?: QRISInfo;
+  gateway_transaction_id?: string;
   expires_at: string;
 }
 
