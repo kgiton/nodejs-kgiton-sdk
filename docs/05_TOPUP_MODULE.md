@@ -188,6 +188,65 @@ interface Transaction {
 
 ---
 
+### syncStatus
+
+Sync status transaksi dengan payment gateway.
+
+Method ini akan melakukan polling langsung ke payment gateway (Winpay) untuk mendapatkan status terbaru. Berguna untuk:
+- QRIS yang sudah dibayar tapi callback belum diterima
+- Virtual Account yang perlu di-sync manual
+- Status transaksi yang stuck di `pending`
+
+```typescript
+const syncResult = await kgiton.topup.syncStatus('transaction-id');
+
+console.log('Transaction ID:', syncResult.transactionId);
+console.log('Previous Status:', syncResult.previousStatus);
+console.log('Current Status:', syncResult.status);
+console.log('Updated:', syncResult.updated ? 'Yes' : 'No');
+
+if (syncResult.updated && syncResult.status === 'success') {
+  console.log('Payment confirmed! Tokens have been added.');
+}
+```
+
+**Response:**
+
+```typescript
+interface SyncTransactionResponse {
+  transactionId: string;
+  status: string;          // Current status
+  previousStatus: string;  // Status before sync
+  paymentMethod?: string;
+  updated: boolean;        // Whether status changed
+  gatewayStatus?: string;  // Raw status from gateway
+}
+```
+
+**Use Case:**
+
+```typescript
+// Check if payment done but callback not received
+async function verifyPayment(transactionId: string): Promise<boolean> {
+  const syncResult = await kgiton.topup.syncStatus(transactionId);
+  
+  if (syncResult.status === 'success') {
+    console.log('Payment confirmed via sync!');
+    return true;
+  }
+  
+  if (syncResult.status === 'pending') {
+    console.log('Still waiting for payment...');
+    return false;
+  }
+  
+  console.log('Payment failed or expired:', syncResult.status);
+  return false;
+}
+```
+
+---
+
 ### getHistory
 
 Dapatkan history transaksi.

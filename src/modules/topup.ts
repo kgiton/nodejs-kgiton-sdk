@@ -11,6 +11,7 @@ import {
   PaymentMethodInfo,
   Transaction,
   TransactionStatusResponse,
+  SyncTransactionResponse,
   PaymentMethod,
 } from '../types';
 
@@ -239,5 +240,34 @@ export class TopupModule {
 
     // Return final status after timeout
     return this.checkStatus(transactionId);
+  }
+
+  /**
+   * Sync transaction status with payment gateway
+   * 
+   * Polls the payment gateway for real-time payment status and
+   * updates the database accordingly. Useful when webhook callbacks
+   * are not received.
+   * 
+   * @param transactionId - Transaction ID to sync
+   * @returns Sync result with updated status
+   * 
+   * @example
+   * ```typescript
+   * const result = await sdk.topup.syncStatus('tx-id');
+   * if (result.updated && result.status === 'success') {
+   *   console.log('Payment confirmed!');
+   * }
+   * ```
+   * 
+   * @remarks
+   * Only QRIS and Virtual Account payments can be synced.
+   * Checkout page payments must rely on webhook callbacks.
+   */
+  public async syncStatus(transactionId: string): Promise<SyncTransactionResponse> {
+    const response = await this.httpClient.post<SyncTransactionResponse>(
+      `/api/topup/sync/${encodeURIComponent(transactionId)}`
+    );
+    return response.data!;
   }
 }

@@ -12,6 +12,7 @@ import { LicenseModule } from './modules/license';
 import { UserModule } from './modules/user';
 import { TopupModule } from './modules/topup';
 import { PaymentModule } from './modules/payment';
+import { PartnerPaymentModule } from './modules/partnerPayment';
 import { KGiTONConfig } from './types';
 
 /**
@@ -87,6 +88,13 @@ export class KGiTON {
   public readonly payment: PaymentModule;
 
   /**
+   * Partner Payment module
+   * - Generate QRIS or Checkout Page for partner transactions
+   * - Uses API key authentication
+   */
+  public readonly partnerPayment: PartnerPaymentModule;
+
+  /**
    * Create a new KGiTON SDK instance
    * 
    * @param config - SDK configuration
@@ -100,6 +108,7 @@ export class KGiTON {
     this.user = new UserModule(this.httpClient);
     this.topup = new TopupModule(this.httpClient);
     this.payment = new PaymentModule(this.httpClient);
+    this.partnerPayment = new PartnerPaymentModule(this.httpClient);
   }
 
   /**

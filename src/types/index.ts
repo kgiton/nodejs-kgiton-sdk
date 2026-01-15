@@ -423,6 +423,77 @@ export interface TransactionStatusResponse {
   paid_at?: string;
 }
 
+/**
+ * Sync transaction status response
+ */
+export interface SyncTransactionResponse {
+  transaction_id: string;
+  status: string;
+  previous_status?: string;
+  payment_method: string;
+  updated: boolean;
+  gateway_status?: string;
+}
+
+// ============================================
+// Partner Payment Types
+// ============================================
+
+export enum PartnerPaymentType {
+  QRIS = 'qris',
+  CHECKOUT_PAGE = 'checkout_page',
+}
+
+export interface PartnerPaymentItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface PartnerPaymentRequest {
+  /** Partner's unique transaction ID */
+  transaction_id: string;
+  /** Amount to charge in IDR */
+  amount: number;
+  /** KGiTON license key */
+  license_key: string;
+  /** Payment method type (qris or checkout_page) */
+  payment_type?: PartnerPaymentType;
+  /** Transaction description */
+  description?: string;
+  /** URL to redirect after payment (for checkout_page) */
+  back_url?: string;
+  /** Expiry in minutes (default 30 for QRIS, 120 for checkout_page) */
+  expiry_minutes?: number;
+  /** List of items */
+  items?: PartnerPaymentItem[];
+  /** Customer name */
+  customer_name?: string;
+  /** Customer email */
+  customer_email?: string;
+  /** Customer phone */
+  customer_phone?: string;
+  /** URL to receive payment status callback */
+  webhook_url?: string;
+}
+
+export interface PartnerQrisData {
+  qr_content?: string;
+  qr_image_url: string;
+}
+
+export interface PartnerPaymentResponse {
+  transaction_id: string;
+  payment_type: PartnerPaymentType;
+  amount: number;
+  gateway_provider: string;
+  gateway_transaction_id?: string;
+  payment_url?: string;
+  qris?: PartnerQrisData;
+  expires_at: string;
+}
+
 // ============================================
 // Auth Types
 // ============================================

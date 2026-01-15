@@ -8,10 +8,11 @@
 | 02 | [Authentication](./02_AUTHENTICATION.md) | API Key dan Bearer Token |
 | 03 | [License Module](./03_LICENSE_MODULE.md) | Validasi license dan token balance |
 | 04 | [User Module](./04_USER_MODULE.md) | Profile, use token, manage keys |
-| 05 | [Topup Module](./05_TOPUP_MODULE.md) | Request topup, payment methods |
+| 05 | [Topup Module](./05_TOPUP_MODULE.md) | Request topup, payment methods, sync status |
 | 06 | [Payment Module](./06_PAYMENT_MODULE.md) | Partner integration, QRIS |
 | 07 | [Error Handling](./07_ERROR_HANDLING.md) | Error types dan handling |
 | 08 | [API Reference](./08_API_REFERENCE.md) | Complete API reference |
+| 09 | [Partner Payment](./09_PARTNER_PAYMENT.md) | Partner QRIS dan Checkout Page |
 
 ---
 
@@ -52,6 +53,14 @@ KGiTON SDK for Node.js adalah SDK resmi untuk mengintegrasikan KGiTON Core API k
 │  │  • callback     │  │  • debug mode   │                   │
 │  └─────────────────┘  └─────────────────┘                   │
 │                                                             │
+│  ┌─────────────────┐                                        │
+│  │ PartnerPayment  │                                        │
+│  │  ─────────────  │                                        │
+│  │  • generateQris │                                        │
+│  │  • genCheckout  │                                        │
+│  │  • generate     │                                        │
+│  └─────────────────┘                                        │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -67,7 +76,10 @@ KGiTON SDK for Node.js adalah SDK resmi untuk mengintegrasikan KGiTON Core API k
 | Cek saldo token | License | `getTokenBalance()` |
 | Gunakan token | User | `useToken()` |
 | Top-up token | Topup | `requestCheckout()` |
+| Sync status transaksi | Topup | `syncStatus()` |
 | Integrasi POS | Payment | `generateQRIS()` |
+| Partner Payment QRIS | PartnerPayment | `generateQris()` |
+| Partner Checkout Page | PartnerPayment | `generateCheckoutPage()` |
 
 ### Requirements
 
