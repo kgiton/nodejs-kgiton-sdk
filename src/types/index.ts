@@ -685,11 +685,6 @@ export interface PaymentStatusResponse {
 // ============================================
 
 /**
- * Payment type for partner payments
- */
-export type PartnerPaymentType = 'qris' | 'checkout_page';
-
-/**
  * Item in a payment request
  */
 export interface PaymentItem {
