@@ -718,7 +718,7 @@ export interface GeneratePaymentRequest {
    * Payment type: 'qris' or 'checkout_page'
    * @default 'checkout_page'
    */
-  payment_type?: PartnerPaymentType;
+  payment_type?: 'qris' | 'checkout_page';
   
   /**
    * Payment description (shown to customer)
