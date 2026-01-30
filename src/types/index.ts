@@ -364,6 +364,26 @@ export interface LicenseTransaction {
 }
 
 // ============================================
+// Bonus Tier Types
+// ============================================
+
+/**
+ * Bonus tier configuration for token purchases
+ */
+export interface BonusTier {
+  /** Unique tier identifier */
+  id: string;
+  /** Minimum tokens to qualify for this tier */
+  min_tokens: number;
+  /** Maximum tokens for this tier (null = unlimited) */
+  max_tokens: number | null;
+  /** Fixed bonus tokens to award */
+  bonus_tokens: number;
+  /** Bonus percentage (optional, for display) */
+  bonus_percentage?: number | null;
+}
+
+// ============================================
 // Top-up Types
 // ============================================
 
@@ -393,6 +413,8 @@ export interface TopupResponse {
   transaction_id: string;
   license_key: string;
   tokens_requested: number;
+  bonus_tokens: number;
+  total_tokens: number;
   amount_to_pay: number;
   price_per_token: number;
   status: string;
@@ -417,6 +439,8 @@ export interface TransactionStatusResponse {
   transaction_id: string;
   amount: number;
   tokens_added: number;
+  bonus_tokens?: number;
+  total_tokens?: number;
   status: TransactionStatus;
   payment_method?: string;
   created_at: string;

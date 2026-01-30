@@ -18,7 +18,7 @@
 
 ---
 
-## 🚀 Features
+## 🏆 Features
 
 - ✅ **Full TypeScript Support** - Complete type definitions for all API responses
 - ✅ **Multiple Auth Methods** - Support for API Key and Bearer Token authentication
@@ -26,6 +26,17 @@
 - ✅ **Error Handling** - Comprehensive error types for better error handling
 - ✅ **Modular Design** - Separate modules for License, User, Topup, and Auth
 - ✅ **Debug Mode** - Optional debug logging for development
+- ✅ **Bonus Tokens** - Earn bonus tokens based on purchase amount
+
+### 🎁 Bonus Token Tiers
+
+| Token Range | Bonus |
+|-------------|-------|
+| 100 - 499 | 0 |
+| 500 - 999 | +25 |
+| 1,000 - 4,999 | +100 |
+| 5,000 - 9,999 | +750 |
+| 10,000+ | +2,000 |
 
 ## 📦 Installation
 
@@ -199,16 +210,25 @@ const availableLicense = await kgiton.user.getAvailableLicenseKey(5);
 ```typescript
 import { PaymentMethod } from '@kgiton/sdk';
 
+// Get bonus tiers configuration
+const tiers = await kgiton.topup.getBonusTiers();
+tiers.forEach(tier => console.log(`${tier.min_tokens}+ tokens: +${tier.bonus_tokens} bonus`));
+
 // Get available payment methods
 const methods = await kgiton.topup.getPaymentMethods();
 
 // Request top-up with checkout page (recommended)
+// Example: 1000 tokens + 100 bonus = 1100 total
 const checkout = await kgiton.topup.requestCheckout('LICENSE-KEY', 1000);
+console.log('Tokens:', checkout.tokens_requested);
+console.log('Bonus:', checkout.bonus_tokens);     // +100
+console.log('Total:', checkout.total_tokens);     // 1100
 console.log('Pay at:', checkout.payment_url);
 
 // Request top-up with Virtual Account
 const va = await kgiton.topup.requestVA('LICENSE-KEY', 1000, PaymentMethod.VA_BRI);
 console.log('VA Number:', va.virtual_account?.number);
+console.log('Bonus:', va.bonus_tokens);
 
 // Check transaction status
 const status = await kgiton.topup.checkStatus('transaction-id');

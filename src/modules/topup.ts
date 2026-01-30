@@ -13,6 +13,7 @@ import {
   TransactionStatusResponse,
   SyncTransactionResponse,
   PaymentMethod,
+  BonusTier,
 } from '../types';
 
 /**
@@ -36,6 +37,37 @@ export class TopupModule {
    */
   public async getPaymentMethods(): Promise<PaymentMethodInfo[]> {
     const response = await this.httpClient.get<PaymentMethodInfo[]>('/api/topup/payment-methods');
+    return response.data!;
+  }
+
+  /**
+   * Get bonus token tiers
+   * 
+   * Returns the current bonus tier configuration from the server.
+   * Tiers are managed by Super Admin and can change over time.
+   * 
+   * @returns List of bonus tiers with min/max tokens and bonus amounts
+   * 
+   * @example
+   * ```typescript
+   * const tiers = await sdk.topup.getBonusTiers();
+   * tiers.forEach(tier => {
+   *   const max = tier.max_tokens ?? '∞';
+   *   console.log(`${tier.min_tokens} - ${max}: +${tier.bonus_tokens} bonus`);
+   * });
+   * 
+   * // Calculate bonus for 1500 tokens
+   * const tokenCount = 1500;
+   * const tier = tiers.find(t => 
+   *   tokenCount >= t.min_tokens && 
+   *   (t.max_tokens === null || tokenCount <= t.max_tokens)
+   * );
+   * const bonus = tier?.bonus_tokens ?? 0;
+   * console.log(`Purchasing ${tokenCount} tokens will give +${bonus} bonus`);
+   * ```
+   */
+  public async getBonusTiers(): Promise<BonusTier[]> {
+    const response = await this.httpClient.get<BonusTier[]>('/api/topup/bonus-tiers');
     return response.data!;
   }
 

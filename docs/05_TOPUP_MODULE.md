@@ -6,6 +6,46 @@ Topup Module menyediakan methods untuk request top-up token, mendapatkan payment
 
 ---
 
+## 🎁 Bonus Token Tiers
+
+Setiap pembelian token akan mendapatkan bonus berdasarkan jumlah yang dibeli. Bonus tiers dikonfigurasi oleh Super Admin melalui dashboard dan dapat berubah sewaktu-waktu.
+
+**Default Tiers:**
+
+| Token Range | Bonus Tokens |
+|-------------|-------------|
+| 100 - 499 | 0 |
+| 500 - 999 | +25 |
+| 1,000 - 4,999 | +100 |
+| 5,000 - 9,999 | +750 |
+| 10,000+ | +2,000 |
+
+> **Note:** Gunakan `getBonusTiers()` untuk mendapatkan tiers terkini dari server.
+
+### Get Bonus Tiers
+
+```typescript
+const tiers = await kgiton.topup.getBonusTiers();
+
+for (const tier of tiers) {
+  console.log(`${tier.min_tokens} - ${tier.max_tokens ?? '∞'}: +${tier.bonus_tokens} bonus`);
+}
+```
+
+**Response Type:**
+
+```typescript
+interface BonusTier {
+  id: string;
+  min_tokens: number;
+  max_tokens: number | null;
+  bonus_tokens: number;
+  bonus_percentage?: number | null;
+}
+```
+
+---
+
 ## Payment Methods
 
 ```typescript
@@ -72,11 +112,13 @@ interface PaymentMethodInfo {
 Request top-up dengan checkout page (recommended).
 
 ```typescript
-const checkout = await kgiton.topup.requestCheckout('LICENSE-KEY', 100);
+const checkout = await kgiton.topup.requestCheckout('LICENSE-KEY', 1000);
 
 console.log('Transaction ID:', checkout.transaction_id);
-console.log('Amount:', checkout.amount);
-console.log('Tokens:', checkout.tokens);
+console.log('Tokens Requested:', checkout.tokens_requested);
+console.log('Bonus Tokens:', checkout.bonus_tokens);     // +100 for 1000 tokens
+console.log('Total Tokens:', checkout.total_tokens);     // 1100
+console.log('Amount:', checkout.amount_to_pay);
 console.log('Payment URL:', checkout.payment_url);
 console.log('Expires:', checkout.expires_at);
 
@@ -89,8 +131,11 @@ console.log('Expires:', checkout.expires_at);
 ```typescript
 interface CheckoutResponse {
   transaction_id: string;
-  amount: number;
-  tokens: number;
+  tokens_requested: number;
+  bonus_tokens: number;      // Bonus based on tier
+  total_tokens: number;      // tokens_requested + bonus_tokens
+  amount_to_pay: number;
+  price_per_token: number;
   payment_url: string;
   expires_at: string;
 }
@@ -112,7 +157,10 @@ const va = await kgiton.topup.requestVA(
 );
 
 console.log('Transaction ID:', va.transaction_id);
-console.log('Amount:', va.amount);
+console.log('Tokens:', va.tokens_requested);
+console.log('Bonus:', va.bonus_tokens);
+console.log('Total:', va.total_tokens);
+console.log('Amount:', va.amount_to_pay);
 console.log('VA Number:', va.virtual_account?.number);
 console.log('Bank:', va.virtual_account?.bank);
 console.log('Expires:', va.expires_at);
@@ -123,8 +171,10 @@ console.log('Expires:', va.expires_at);
 ```typescript
 interface VAResponse {
   transaction_id: string;
-  amount: number;
-  tokens: number;
+  tokens_requested: number;
+  bonus_tokens: number;
+  total_tokens: number;
+  amount_to_pay: number;
   virtual_account?: {
     number: string;
     bank: string;
@@ -172,7 +222,8 @@ interface Transaction {
   user_id: string;
   license_key: string;
   amount: number;
-  tokens_added: number;
+  tokens_added: number;      // Base tokens purchased
+  bonus_tokens?: number;     // Bonus tokens earned
   status: 'success' | 'pending' | 'expired' | 'failed' | 'cancelled';
   payment_method?: string;
   payment_reference?: string;
