@@ -162,6 +162,96 @@ console.log('API Key revoked');
 
 ---
 
+### getTokenUsageStats
+
+Dapatkan statistik penggunaan token (weekly usage, average, dll).
+
+```typescript
+const stats = await kgiton.user.getTokenUsageStats();
+
+console.log('Weekly Usage:', stats.weekly_usage);
+console.log('Weekly Labels:', stats.weekly_labels);
+console.log('Total This Week:', stats.total_this_week);
+console.log('Avg Daily Usage:', stats.avg_daily_usage);
+console.log('Est Days Remaining:', stats.est_days_remaining);
+```
+
+**Response:**
+
+```typescript
+interface TokenUsageStats {
+  weekly_usage: number[];        // [12, 19, 8, 15, 22, 10, 5]
+  weekly_labels: string[];       // ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  total_this_week: number;       // Total usage minggu ini
+  avg_daily_usage: number;       // Rata-rata harian
+  est_days_remaining: number;    // Estimasi hari tersisa
+}
+```
+
+---
+
+### getLicenseTokenUsage
+
+Dapatkan riwayat penggunaan token untuk license tertentu.
+
+```typescript
+const usage = await kgiton.user.getLicenseTokenUsage('LICENSE-KEY', 1, 20);
+
+console.log('License:', usage.data.license_key);
+console.log('Current Balance:', usage.data.current_balance);
+console.log('Weekly Usage:', usage.data.weekly_usage);
+console.log('Avg Daily:', usage.data.avg_daily_usage);
+
+// Usage history
+for (const record of usage.data.usage_history) {
+  console.log(`${record.purpose}: -${record.tokens_used} (${record.created_at})`);
+}
+
+// Pagination
+console.log(`Page ${usage.pagination.page} of ${usage.pagination.totalPages}`);
+```
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `licenseKey` | `string` | Yes | License key |
+| `page` | `number` | No | Page number (default: 1) |
+| `limit` | `number` | No | Items per page (default: 20) |
+
+**Response:**
+
+```typescript
+interface LicenseTokenUsageResponse {
+  success: boolean;
+  data: {
+    license_key: string;
+    current_balance: number;
+    weekly_usage: number;
+    avg_daily_usage: number;
+    usage_history: TokenUsageRecord[];
+  };
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+interface TokenUsageRecord {
+  id: string;
+  tokens_used: number;
+  previous_balance: number;
+  new_balance: number;
+  purpose: string;
+  metadata?: Record<string, unknown>;
+  created_at: string;
+}
+```
+
+---
+
 ### getAvailableLicenseKey
 
 Dapatkan license key dengan token cukup untuk operasi.

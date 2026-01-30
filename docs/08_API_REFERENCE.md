@@ -340,6 +340,63 @@ user.getAvailableLicenseKey(minTokens?: number): Promise<LicenseKey | null>
 
 Get license key with sufficient tokens.
 
+### getTokenUsageStats
+
+```typescript
+user.getTokenUsageStats(): Promise<TokenUsageStats>
+```
+
+Get token usage statistics across all user's licenses.
+
+**Response:**
+
+```typescript
+interface TokenUsageStats {
+  weeklyUsage: number;
+  avgDailyUsage: number;
+  estimatedDaysRemaining: number | null;
+  usageHistory: TokenUsageRecord[];
+}
+
+interface TokenUsageRecord {
+  date: string;
+  tokensUsed: number;
+}
+```
+
+### getLicenseTokenUsage
+
+```typescript
+user.getLicenseTokenUsage(
+  licenseKey: string, 
+  page?: number, 
+  limit?: number
+): Promise<LicenseTokenUsageResponse>
+```
+
+Get token usage history for a specific license.
+
+**Response:**
+
+```typescript
+interface LicenseTokenUsageResponse {
+  licenseKey: string;
+  records: LicenseTokenUsage[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+interface LicenseTokenUsage {
+  id: string;
+  tokensUsed: number;
+  purpose?: string;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+}
+```
+
 ---
 
 ## TopupModule

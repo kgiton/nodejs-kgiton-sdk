@@ -273,6 +273,55 @@ export interface TokenUsage {
   created_at: string;
 }
 
+/**
+ * Token usage statistics response
+ */
+export interface TokenUsageStats {
+  weekly_usage: number[];
+  weekly_labels: string[];
+  total_this_week: number;
+  avg_daily_usage: number;
+  est_days_remaining: number;
+}
+
+/**
+ * Single token usage record (for per-license history)
+ */
+export interface TokenUsageRecord {
+  id: string;
+  tokens_used: number;
+  previous_balance: number;
+  new_balance: number;
+  purpose: string;
+  metadata?: Record<string, unknown>;
+  created_at: string;
+}
+
+/**
+ * Per-license token usage data
+ */
+export interface LicenseTokenUsage {
+  license_key: string;
+  current_balance: number;
+  weekly_usage: number;
+  avg_daily_usage: number;
+  usage_history: TokenUsageRecord[];
+}
+
+/**
+ * Per-license token usage response with pagination
+ */
+export interface LicenseTokenUsageResponse {
+  success: boolean;
+  data: LicenseTokenUsage;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 // ============================================
 // Transaction Types
 // ============================================

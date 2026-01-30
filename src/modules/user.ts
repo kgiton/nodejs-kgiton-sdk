@@ -11,6 +11,8 @@ import {
   UseTokenRequest,
   UseTokenResponse,
   LicenseKey,
+  TokenUsageStats,
+  LicenseTokenUsageResponse,
 } from '../types';
 
 /**
@@ -52,6 +54,51 @@ export class UserModule {
    */
   public async getTokenBalance(): Promise<TokenBalanceResponse> {
     const response = await this.httpClient.get<TokenBalanceResponse>('/api/user/token-balance');
+    return response.data!;
+  }
+
+  /**
+   * Get token usage statistics
+   * 
+   * @returns Weekly usage data, average daily usage, and estimated days remaining
+   * 
+   * @example
+   * ```typescript
+   * const stats = await sdk.user.getTokenUsageStats();
+   * console.log('Avg daily:', stats.avg_daily_usage);
+   * console.log('Days remaining:', stats.est_days_remaining);
+   * ```
+   */
+  public async getTokenUsageStats(): Promise<TokenUsageStats> {
+    const response = await this.httpClient.get<TokenUsageStats>('/api/user/token-usage-stats');
+    return response.data!;
+  }
+
+  /**
+   * Get per-license token usage details with history
+   * 
+   * @param licenseKey - The license key to get usage for
+   * @param page - Page number (default: 1)
+   * @param limit - Items per page (default: 20)
+   * @returns License usage data with paginated history
+   * 
+   * @example
+   * ```typescript
+   * const usage = await sdk.user.getLicenseTokenUsage('ABC-123');
+   * console.log('Weekly usage:', usage.data.weekly_usage);
+   * usage.data.usage_history.forEach(record => {
+   *   console.log(`${record.purpose}: -${record.tokens_used}`);
+   * });
+   * ```
+   */
+  public async getLicenseTokenUsage(
+    licenseKey: string,
+    page: number = 1,
+    limit: number = 20
+  ): Promise<LicenseTokenUsageResponse> {
+    const response = await this.httpClient.get<LicenseTokenUsageResponse>(
+      `/api/user/license/${encodeURIComponent(licenseKey)}/usage?page=${page}&limit=${limit}`
+    );
     return response.data!;
   }
 

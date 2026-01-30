@@ -192,6 +192,19 @@ const result = await kgiton.user.useToken('LICENSE-KEY', {
   metadata: { endpoint: '/api/data' }
 });
 
+// Get token usage statistics
+const stats = await kgiton.user.getTokenUsageStats();
+console.log('Weekly usage:', stats.weeklyUsage);
+console.log('Avg daily:', stats.avgDailyUsage);
+console.log('Est. days remaining:', stats.estimatedDaysRemaining);
+
+// Get per-license usage history
+const usage = await kgiton.user.getLicenseTokenUsage('LICENSE-KEY', 1, 20);
+console.log('Total usage records:', usage.total);
+usage.records.forEach(record => {
+  console.log(`${record.createdAt}: ${record.tokensUsed} tokens - ${record.purpose}`);
+});
+
 // Assign a new license key to user
 const license = await kgiton.user.assignLicense('NEW-LICENSE-KEY');
 
